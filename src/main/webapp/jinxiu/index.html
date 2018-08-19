@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>小仙女，七夕快乐</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<style type="text/css">
+		@font-face {
+			font-family: digit;
+			src: url('digital-7_mono.ttf') format("truetype");
+		}
+	</style>
+	<link href="jinxiu/css/default.css" type="text/css" rel="stylesheet">
+	<script type="text/javascript" src="jinxiu/js/jquery.js"></script>
+	<script type="text/javascript" src="jinxiu/js/garden.js"></script>
+    <script type="text/javascript" src="jinxiu/js/functions.js"></script>
+</head>
+
+<body>
+	<audio autoplay="true" controls="controls" loop="loop" preload="auto" hidden="true"
+            	src="./往后余生-马良.mp3">
+      		你的浏览器版本太低，不支持audio标签
+	</audio>
+	<!-- <embed src="往后余生-马良.mp3" hidden="true" autostart="true" loop="1"> -->
+	<!-- <bgsound src="音乐保存的绝对路径" autostart=true loop=infinite>  -->
+	<div id="mainDiv">
+		<div id="content">
+			<div id="code">
+				<span class="comments">自从7月13号</span><br />
+				<span class="comments">在重庆小面馆第一次见到你，我就想认识你了</span><br />
+				<span class="comments">从那天起，我经常去店里吃饭，只希望能多见你一面</span><br /><br />
+
+				<span class="comments">直到7月25号</span><br />
+				<span class="comments">在公司搬迁的前几天，我才鼓起勇气跟你要了微信</span><br />
+				<span class="comments">这是我第一次跟女生搭讪要微信，我希望也是唯一一次</span><br />
+				<span class="comments">认识你，让我经历了很多人生中的第一次，希望以后我们能够一起经历更多的第一次</span></br ><br />
+
+				<span class="comments">我的生日是950906</span><br/>
+				<span class="comments">当我看到你的微信号上写着990902的生日时，我有点犹豫了</span><br />
+				<span class="comments">4岁的年龄差距虽不是很大，但我怕这会成为我们之间的代沟</span><br /><br />
+				
+				<span class="comments">经过了这些天的相处和了解</span><br />
+				<span class="comments">我觉得我们之间并没有什么代沟</span><br />
+				<span class="comments">甚至我愈加觉得你就是我理想中的那个女孩</span><br /><br />
+
+				<span class="string">往后余生，我只要你</span><br />
+				<span class="string">往后余生，风雪是你</span><br />
+				<span class="string">平淡是你，清贫也是你</span><br />
+				<span class="string">荣华是你，心底温柔是你</span><br />
+				<span class="string">目光所致，也是你</span><br /><br />
+
+				<span class="string">想带你去看晴空万里</span><br />
+				<span class="string">想大声告诉你我为你着迷</span><br /><br />
+
+				<span class="string">往后的余生，我只要你</span><br />
+				<span class="string">往后余生，冬雪是你</span><br />
+				<span class="string">春华是你，夏雨也是你</span><br />
+				<span class="string">秋黄是你，四季冷暖是你</span><br />
+				<span class="string">目光所致，也是你</span><br /><br/>
+
+				<span class="keyword">最后，七夕情人节快乐！你愿意做我的女朋友，共度往后余生吗</span><br />
+				<button id="yes" onclick="agree()" >YES</button>
+				<button id="no" onclick="refuse()" >NO</button>
+				<br />
+				
+
+				
+
+			</div>
+			<input id="time" type="hidden" value="0"/>
+			<div id="loveHeart">
+				<canvas id="garden"></canvas>
+				<div id="words">
+					<div id="messages">
+						To 锦秀小仙女:<p/>
+						&nbsp;&nbsp;&nbsp;&nbsp;I have fallen in love with you for
+						<div id="elapseClock"></div>
+					</div>
+					<div id="loveu">
+						Love u forever and ever.<br/>
+						<div class="signature">- 叶长鑫</div>
+					</div>
+				</div>
+			</div>
+		</div>
+<!-- 		<div id="copyright">
+			Inspired by <a href="http://www.openrise.com/lab/FlowerPower/">FlowerPower</a> project.<br />
+			Copyright © 2011 <a href='http://hackerzhou.me'>hackerzhou.me</a> 2009-2011
+		</div> -->
+	</div>
+	<script type="text/javascript">
+		var data = {"msg":"网页访问"};
+		$.post("dingding/jinxiu",data);
+
+		var offsetX = $("#loveHeart").width() / 2;
+		var offsetY = $("#loveHeart").height() / 2 - 55;
+		var together = new Date();
+		together.setFullYear(2018, 6, 13);
+		together.setHours(18);
+		together.setMinutes(15);
+		together.setSeconds(0);
+		together.setMilliseconds(0);
+		
+		if (!document.createElement('canvas').getContext) {
+			var msg = document.createElement("div");
+			msg.id = "errorMsg";
+			msg.innerHTML = "Your browser doesn't support HTML5!<br/>Recommend use Chrome 14+/IE 9+/Firefox 7+/Safari 4+"; 
+			document.body.appendChild(msg);
+			$("#code").css("display", "none")
+			$("#copyright").css("position", "absolute");
+			$("#copyright").css("bottom", "10px");
+		    document.execCommand("stop");
+		} else {
+			setTimeout(function () {
+				startHeartAnimation();
+			}, 5000);
+
+			timeElapse(together);
+			setInterval(function () {
+				timeElapse(together);
+			}, 500);
+
+			adjustCodePosition();
+			$("#code").typewriter();
+		}
+		
+		function agree(){
+			event.stopPropagation();
+			var data = {"msg":"小仙女想和你共度余生"};
+			$.post("dingding/jinxiu",data);
+			alert("余生请多指教！");
+		}
+
+		function tryToLike(){
+			event.stopPropagation();
+			var data = {"msg":"小仙女想和你尝试交往"};
+			$.post("dingding/jinxiu",data);
+			alert("您的男朋友已到达，请小仙女签收！");
+		}
+		
+		function refuse(){
+			event.stopPropagation();
+			var data = {"msg":"小仙女拒绝了你" + $("#time").val()};
+			$.post("dingding/jinxiu",data);
+			if($("#time").val() == "0"){
+				$("#time").val("1")
+				alert("你肯定是手滑点错了，再给你一次选择的机会");
+			}else if($("#time").val() == "1"){
+				$("#time").val("2")
+				alert("给我一个机会，和我尝试交往好吗");
+			}else{
+				alert("我懂了，I bless you");
+			}
+			
+		}
+	</script>
+</body>
+</html>
