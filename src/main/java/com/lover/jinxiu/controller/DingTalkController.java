@@ -9,6 +9,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lover.jinxiu.service.DingTalkService;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -17,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,9 +31,12 @@ import net.sf.json.JSONObject;
 public class DingTalkController {
     public static String WEBHOOK_TOKEN = "https://oapi.dingtalk.com/robot/send?access_token=cea3ac486f9fbbf9799ed526887824bba96f6a001420b7cb39e11f5b53a53be7";
 
+    @Autowired
+    DingTalkService dingTalkService;
+
     @RequestMapping("jinxiu")
     @ResponseBody
-    public void agree(HttpServletRequest request,String msg) throws ClientProtocolException, IOException{
+    public void agree(HttpServletRequest request,String msg) throws IOException{
         HttpClient httpclient = HttpClients.createDefault();
 
         HttpPost httppost = new HttpPost(WEBHOOK_TOKEN);
@@ -75,28 +80,12 @@ public class DingTalkController {
 //        appLog.info("App Client IP: "+ip+", fromSource: "+fromSource);  
         return ip;  
     }  
-    
-    public static String getAddressByIP(String ip) {
+
+    public String getAddressByIP(String ip) {
     	String address = "";
     	try {
-			String str = getResult("http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip="+ip, "utf-8");
-			System.out.println(str);
-			
-			JSONObject result = JSONObject.fromObject(str);
-			
-			JSONObject data = (JSONObject) result.get("data");
-			
-			String code = String.valueOf(result.get("code"));
-			
-			if(code.equals("0")) {
-				address = data.get("country")+"--" +data.get("region") +data.get("area")+"--" +data.get("city")+"--" +data.get("isp");
-			}else {
-				address = "IP地址有误";
-			}
-			
+			address = dingTalkService.getAddressByIP(ip);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			address = "获取IP地址异常："+e.getMessage();
 		}
     	return address;
@@ -131,6 +120,6 @@ public class DingTalkController {
     }
 	
     public static void main(String[] args) {
-    	System.out.println(getAddressByIP("119.29.1.127"));
+//    	System.out.println(getAddressByIP("119.29.1.127"));
 	}
 }
