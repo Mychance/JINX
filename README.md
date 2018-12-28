@@ -1,124 +1,275 @@
-# Markdown 简介
+
+#多线程
+
+
+#多线程基础
+##Thread
+1. **sleep(long)** : 使当前线程睡眠，不释放锁
+2. **join(long)** : 让当前线程等待指定线程执行完才继续执行
+3. **interrupt()** : 通知线程应该中断，将中断标志设为true
+>当对一个线程，调用 interrupt() 时:
+> ① 如果线程处于被阻塞状态（例如处于sleep, wait, join 等状态），那么线程将立即退出被阻塞状态，并抛出一个InterruptedException异常。仅此而已;
+>② 如果线程处于正常活动状态，那么会将该线程的中断标志设置为 true，仅此而已。被设置中断标志的线程将继续正常运行，不受影响。
+>
+>interrupt() 并不能真正的中断线程，需要被调用的线程自己进行配合才行。也就是说，一个线程如果有被中断的需求，那么就可以这样做。
+>① 在正常运行任务时，经常检查本线程的中断标志位，如果被设置了中断标志就自行停止线程。
+>② 在调用阻塞方法时正确处理InterruptedException异常。（例如，catch异常后就结束线程。）
+3. **interrupted()** : 判断线程是否中断并清除中断标志
+4. **isInterrupted()** : 判断线程是否中断
+5. **isAlive()**:判断线程是否存活
+6. **yield()**:让出CPU，重新和其它线程竞争CPU
+7. **[state（线程状态）](https://www.zhihu.com/question/56494969/answer/154053599])**
+	- *New* ：新建
+	- *Runnable* ：调用start方法后进入Runnable状态
+	- *Blocked* ：阻塞,等待获得锁
+	- *Waiting* ：无限期等待
+	- *Timed_waiting* ：限期等待
+	- *Terminated* ：终止
+![线程状态](./1545909301828.png)
 
 ---
 
-## 思维导图
-
-![文章思维导图](http://wenchao-img.qiniudn.com/a53403c34c199fdd759571c2997ed910.png)
-
----
-
-## Markdown是什么
-
-> Markdown 是一种轻量级标记语言，创始人为约翰·格鲁伯（John Gruber）。它允许人们“使用易读易写的纯文本格式编写文档，然后转换成有效的XHTML(或者HTML)文档”。[1]这种语言吸收了很多在电子邮件中已有的纯文本标记的特性。    
-> ——维基百科
-
----
-
-## 优点：
-
-- 简单，容易上手
-- 纯文本实现，程序员最爱，容易扩展，方便和其他工具联动
-- 平台支持广：以Github为首的各种平台、各种博客都支持，基本上现在面向程序员的输入框都可以用Markdown来写了
-- 丰富的工具链
-    - 编辑器：各种支持所见即所得的编辑器
-    - 和各种其他格式互相转化的工具。PDF、Mobi、Epub、HTML等等，几乎你能想到的所有格式它都能转
+##Object
+1. **notity()**：唤醒一个wait状态的线程
+2. **notifyAll()**：唤醒所有wait状态的线程
+3. **wait()**：将当前运行的线程挂起（即让其进入阻塞状态），直到notify或notifyAll方法来唤醒线程
+4. **wait(long)**：该方法与wait()方法类似，唯一的区别就是在指定时间内，如果没有notify或notifAll方法的唤醒，也会自动唤醒。
+>wait方法是一个本地方法，其底层是通过一个叫做监视器锁的对象来完成的。如果在调用wait方式时没有monitor对象的所有权，就会抛出**IllegalMonitorStateException**异常那如何获取monitor对象所有权？Java中只能通过**Synchronized**关键字来完成。
+>
+>notify和notifyAll方法也一样；因此，wait、notify、notifyAll方法的使用必须在同步代码块的范围内，否则就会抛出IllegalMonitorStateException异常。
+>详情可参考https://www.cnblogs.com/paddix/p/5381958.html
 
 ---
 
-## Markdown语法
-
-- [最好入门的简明语法](http://ibruce.info/2013/11/26/markdown/)
-- [简明版 Markdown 语法说明(简体中文版)](http://wowubuntu.com/markdown/basic.html)
-- [完整版 Markdown 语法说明(简体中文版)](http://wowubuntu.com/markdown/index.html)
-- [GitHub Flavored Markdown](https://help.github.com/articles/github-flavored-markdown/)
-
----
-
-## Markdown 编辑器(1)
-
-* Windows 平台
-    * [MarkdownPad](http://markdownpad.com/)
-    * [MarkPad](http://code52.org/DownmarkerWPF/)
-* Linux 平台
-    * [ReText](http://sourceforge.net/p/retext/home/ReText/)
-* Mac 平台
-    * ***[Mou](http://mouapp.com/)***，应该是Mac下目前最好的markdown编辑器，推荐使用。
-* 在线编辑器
-    * [Markable.in](http://markable.in/)
-    * [Dillinger.io](http://dillinger.io/)
+#Synchronized
+##主要作用
+Synchronized是Java中解决并发问题最常用，最简单的一种方法，Synchronized的作用主要有以下三个：
+- **原子性**：确保线程互斥的访问同步代码
+- **可见性**：保证共享变量的修改能够及时可见
+- **有序性**：有效解决重排序问题
 
 ---
 
-## Markdown 编辑器(2)
-
-- 浏览器插件
-    - [MaDe](https://chrome.google.com/webstore/detail/oknndfeeopgpibecfjljjfanledpbkog) (Chrome)
-    - ***[马克飞象](http://maxiang.info/)***，用来写印象笔记的客户端，支持TOC、LaTex 公式、流程图、时序图等扩展语法，支持直接从剪贴板粘贴图片。缺点是只支持用来写印象笔记，并且只能试用10天，收费79每年。如果平时有用印象笔记记录的习惯，推荐使用。
-- 高级应用
-    - [Sublime Text 2](http://www.sublimetext.com/2) + [MarkdownEditing](http://ttscoff.github.io/MarkdownEditing/) / [教程](http://lucifr.com/2012/07/12/markdownediting-for-sublime-text-2/)
+##基本使用
+- **修饰普通方法**：获取当前对象的锁
+- **修饰静态方法**：获取Class对象的锁
+- **修饰代码块**：获取指定对象的锁
 
 ---
 
-## Mou
+##[实现原理](http://www.cnblogs.com/paddix/p/5367116.html)
+通过反编译下面的代码来看Synchronized是如何实现对**代码块**进行同步的
+```java
+package com.paddx.test.concurrent;
 
-![Mou截图](http://wenchao-img.qiniudn.com/b44ec598c54b736b5ea621112f993a21.png)
-
----
-
-## 马克飞象
-
-![马克飞象截图](http://wenchao-img.qiniudn.com/513b1b89566dd2a15935bee064221974.png)
-
----
-
-## 格式转化(1)
-
-- [Pondoc](http://johnmacfarlane.net/pandoc/)，号称格式转化的瑞士军刀，可以转化成几乎任何格式
-- 制作自己的博客
-    - [jekyll](http://jekyllcn.com/)，Github原生支持的一个静态博客，ruby写的，可以直接用Github pages托管，相当于拥有了一个挂在github上的免费个人博客；
-    - [Octopress](http://octopress.org/)，基于jekyll，做了一些改进；
-    - [Hexo](http://hexo.io/index.html)，一个台湾人写的markdown静态博客框架，使用NodeJS实现，速度快，轻量级，主题也比较小清新。
-- 制作文档
-    - [readthedocs](https://readthedocs.org/)，使用最广的文档服务，如[Scrapy 文档](https://scrapy-chs.readthedocs.org/zh_CN/0.24/index.html)，支持Restructed和Markdown语言，其Markdown支持通过mkdocs来实现；
-    - [mkdocs](http://www.mkdocs.org/)
+public class SynchronizedDemo {
+    public void method() {
+        synchronized (this) {
+            System.out.println("Method 1 start");
+        }
+    }
+}
+```
+反编译结果：
+![反编译结果](./1545964235043.png)
+>由图可以看出，JVM会在被Synchronized修饰的代码块前后分别插入monitorenter和monitorexit指令
 
 ---
 
-## mkdocs 文档效果
+###monitorenter
+JVM规范中对monitorenter指令的描述如下：
+>Each object is associated with a monitor. A monitor is locked if and only if it has an owner. The thread that executes monitorenter attempts to gain ownership of the monitor associated with objectref, as follows:
+>• If the entry count of the monitor associated with objectref is zero, the thread enters the monitor and sets its entry count to one. The thread is then the owner of the monitor.
+>• If the thread already owns the monitor associated with objectref, it reenters the monitor, incrementing its entry count.
+>• If another thread already owns the monitor associated with objectref, the thread blocks until the monitor's entry count is zero, then tries again to gain ownership.
 
-![Scrapy 文档](http://wenchao-img.qiniudn.com/d2f8561a4053477b739c07572d634361.png)
-
----
-
-## 格式转化(2)
-
-- 制作电子书
-    - [gitbook](https://www.gitbook.com)，利用Markdown写电子书的工具，并提供免费托管。开源电子书[Docker —— 从入门到实践](http://yeasy.gitbooks.io/docker_practice/)即是托管在上面的。我的笔记网站也是通过该工具生成的。
-- 制作slides
-    - [reveal.js](https://github.com/hakimel/reveal.js), [Demo](http://lab.hakim.se/reveal-js/#/)
-    - [landslide](https://github.com/adamzap/landslide), [Demo](http://adamzap.com/misc/presentation.html#slide1)
-
----
-
-## Docker —— 从入门到实践电子书
-
-![Docker —— 从入门到实践电子书](http://wenchao-img.qiniudn.com/6d8b05152f4095b25b2dfc6d99d85692.png)
+这段话的大概意思是：
+每个对象有一个**监视器锁（monitor）**。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
+- 如果monitor的进入数为0，则该线程进入monitor，然后将进入数设置为1，该线程即为monitor的所有者。
+-  如果线程已经占有该monitor，只是重新进入，则进入monitor的进入数加1.
+-  如果其他线程已经占用了monitor，则该线程进入阻塞状态，直到monitor的进入数为0，再重新尝试获取monitor的所有权。
 
 ---
 
-## 参考链接
+###monitorexit
+JVM规范中对monitorexit指令的描述如下：
+>The thread that executes monitorexit must be the owner of the monitor associated with the instance referenced by objectref.
+>The thread decrements the entry count of the monitor associated with objectref. If as a result the value of the entry count is zero, the thread exits the monitor and is no longer its owner. Other threads that are blocking to enter the monitor are allowed to attempt to do so.
 
-- [自动保存图片和插入地址的Alfred Workflow](http://www.jianshu.com/p/2dd051b0b87c)
-- [七牛云存储自动同步](http://developer.qiniu.com/docs/v6/tools/qrsbox.html)
-- [Mac 截图解决方案](http://zh.wikihow.com/%E5%9C%A8Mac-OS-X%E4%B8%8A%E6%88%AA%E5%8F%96%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE)
-- [MarkDown 语法](http://help.gitbook.io/book/markdown.html)
-- [Markdown转ppt工具reveal.js](https://github.com/hakimel/reveal.js), [Demo](http://lab.hakim.se/reveal-js/#/)
-- [Markdown+Pandoc→HTML幻灯片速成](http://www.soimort.org/posts/165/)
-- [Markdown介绍slide](http://aleung.github.io/presentation/markdown/slides.html)
-- [landslide](https://github.com/adamzap/landslide)
-- [gitbook 使用入门](http://dockerpool.com/static/books/gitbook_cn/index.html)
+这段话的大概意思为：
+- 执行monitorexit的线程必须是objectref所对应的monitor的所有者。
+- 指令执行时，monitor的进入数减1，如果减1后进入数为0，那线程退出monitor，不再是这个monitor的所有者。其他被这个monitor阻塞的线程可以尝试去获取这个 monitor 的所有权。 
+
+>通过这两段描述，我们应该能很清楚的看出Synchronized的实现原理，Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么**只能在同步的块或者方法中才能调用wait/notify等方法**，否则会抛出**java.lang.IllegalMonitorStateException**的异常的原因。
 
 ---
 
-# THANK YOU!
+##锁优化
+>﻿JDK1.6 对锁的实现引入了大量的优化，如偏向锁、轻量级锁、自旋锁、适应性自旋锁、锁消除、锁粗化等技术来减少锁操作的开销。
+>锁主要存在四中状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，他们会随着竞争的激烈而逐渐升级。注意锁可以升级不可降级，这种策略是为了提高获得锁和释放锁的效率。
+>JDK 1.6中默认是开启偏向锁和轻量级锁的，我们也可以通过**-XX:-UseBiasedLocking**来禁用偏向锁。
+
+---
+
+###MarkWord
+在学习锁之前，需要先了解下什么是MarkWord：
+>MarkWord是HotSpot虚拟机的对象头包括的一部分信息，用于存储对象自身的运行时数据，如哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，这部分数据的长度在32位和64位的虚拟机（未开启压缩指针）中分别为32bit和64bit，官方称它为“MarkWord”。
+
+它的最后2bit是锁状态标志位，用来标记当前对象的状态，对象的所处的状态，决定了markword存储的内容，如下表所示：
+![Alt text](./1545980216883.png)
+
+---
+
+###重量级锁
+>Synchronized是通过对象内部的一个叫做监视器锁（monitor）来实现的。但是监视器锁本质又是依赖于底层的操作系统的**Mutex Lock（互斥量）**来实现的。而操作系统实现线程之间的切换这就需要从**用户态转换到内核态**，这个成本非常高，状态之间的转换需要相对比较长的时间，这就是为什么Synchronized效率低的原因。因此，这种依赖于操作系统Mutex Lock（互斥量）所实现的锁我们称之为“重量级锁”。JDK中对Synchronized做的种种优化，其核心都是为了减少这种重量级锁的使用。
+
+---
+
+###自旋锁与适应性自旋
+1. **自旋锁**
+>由于Java中线程的切换需要从用户态转到内核态，这需要花费较长的时间。通常线程对共享数据的锁定状态只会持续很短的一段时间，为了这段时间去挂起和恢复线程并不值得。因此我们可以让请求锁的线程稍等一下，但不放弃处理器的执行时间，看看持有锁的线程是否很快释放锁。为了让线程等待，我们只需让线程执行一个**忙循环**，也就是所谓的自旋。
+2. **适应性自旋**
+>自旋的时间由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。如果在同一个锁对象上，自旋等待刚刚成功获取过锁，而且持有锁的线程正在运行中，那么虚拟机就会认为这次自旋也很有可能再次成功，进而允许自旋等待持续相对较长的时间。
+>如果某个锁自旋很少获得成功，那么在以后要获取这个锁时将可能省略掉自旋过程，避免浪费处理器资源。
+
+---
+
+###锁消除
+>锁消除理解起来很简单，它指的就是虚拟机即使编译器在运行时，如果检测到那些共享数据不可能存在竞争，那么就执行锁消除。锁消除可以节省毫无意义的请求锁的时间。
+
+---
+
+###锁粗化
+>如果虚拟机检测到有一串零碎的操作都是对同一对象的加锁，将会把加锁同步的范围扩展（粗化）到整个操作序列的外部。
+
+原则上，我们在编写代码的时候，总是推荐将同步快的作用范围限制得尽量小——只在共享数据的实际作用域才进行同步，这样是为了使得需要同步的操作数量尽可能变小，如果存在锁竞争，那等待线程也能尽快拿到锁。
+
+大部分情况下，上面的原则都是没有问题的，但是如果一系列的连续操作都对同一个对象反复加锁和解锁，甚至加锁操作是出现在循环体中，那即使没有线程竞争，频繁地进行互斥同步操作也会导致不必要的性能损耗。
+
+StringBuffer的连续append()方法就属于这种情况。如果虚拟机探测到有这样一串零碎的操作都对同一个对象加锁，将会把加锁同步的范围扩展（粗化）到整个操作序列的外部，也就是扩展到第一个append()操作之前直至最后一个append()操作之后，这样只需要加锁一次就可以了。
+
+---
+
+###轻量级锁
+>“轻量级”是相对于使用操作系统互斥量来实现的传统锁而言的。但是，首先需要强调一点的是，轻量级锁并不是用来代替重量级锁的，它的本意是**在没有多线程竞争的前提下，减少传统的重量级锁使用产生的性能消耗**。因为**使用轻量级锁时，不需要申请互斥量**。另外，轻量级锁的加锁和解锁都用到了CAS操作。在解释轻量级锁的执行过程之前，先明白一点，轻量级锁所适应的场景是**线程交替执行同步块**的情况，**如果存在同一时间访问同一锁的情况，就会导致轻量级锁膨胀为重量级锁。**
+
+轻量级锁能够提升程序同步性能的依据是“**对于绝大部分锁，在整个同步周期内都是不存在竞争的**”，这是一个经验数据。如果没有竞争，轻量级锁使用 CAS 操作避免了使用互斥操作的开销。但如果存在锁竞争，除了互斥量开销外，还会额外发生CAS操作，**因此在有锁竞争的情况下，轻量级锁比传统的重量级锁更慢！如果锁竞争激烈，那么轻量级将很快膨胀为重量级锁！**
+
+---
+
+####轻量级锁的加锁过程
+1. 在代码进入同步块的时候，如果同步对象锁状态为无锁状态（锁标志位为“01”状态，是否为偏向锁为“0”），虚拟机首先将在当前线程的栈帧中建立一个名为**锁记录（Lock Record）**的空间，用于存储锁对象目前的Mark Word的拷贝，官方称之为 Displaced Mark Word。
+2. 拷贝对象头中的Mark Word复制到锁记录中。
+3. 拷贝成功后，虚拟机将使用CAS操作尝试将对象的Mark Word更新为指向Lock Record的指针，并将Lock record里的owner指针指向object mark word。如果更新成功，则执行步骤4，否则执行步骤5。
+4. 如果这个更新动作成功了，那么这个线程就拥有了该对象的锁，并且对象Mark Word的锁标志位设置为“00”，即表示此对象处于轻量级锁定状态。
+5. 如果这个更新操作失败了，虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是就说明当前线程已经拥有了这个对象的锁，那就可以直接进入同步块继续执行。否则说明多个线程竞争锁，轻量级锁就要膨胀为重量级锁，锁标志的状态值变为“10”，Mark Word中存储的就是指向重量级锁（互斥量）的指针，后面等待锁的线程也要进入阻塞状态。 而当前线程便尝试使用自旋来获取锁，自旋就是为了不让线程阻塞，而采用循环去获取锁的过程。
+
+---
+
+####轻量级锁的解锁过程
+1. 通过CAS操作尝试把线程中复制的Displaced Mark Word对象替换当前的Mark Word。
+2. 如果替换成功，整个同步过程就完成了。
+3. 如果替换失败，说明有其他线程尝试过获取该锁（此时锁已膨胀），那就要在释放锁的同时，唤醒被挂起的线程。
+
+---
+
+###偏向锁
+>引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的CAS原子指令的性能消耗）。上面说过，轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能。
+
+---
+
+####偏向锁的加锁过程
+1. 访问Mark Word中偏向锁的标识是否设置成1，锁标志位是否为01——确认为可偏向状态。
+2. 如果为可偏向状态，则测试线程ID是否指向当前线程，如果是，进入步骤（5），否则进入步骤（3）。
+3. 如果线程ID并未指向当前线程，则通过CAS操作竞争锁。如果竞争成功，则将Mark Word中线程ID设置为当前线程ID，然后执行（5）；如果竞争失败，执行（4）。
+4. 如果CAS获取偏向锁失败，则表示有竞争。当到达全局安全点（safepoint）时获得偏向锁的线程被挂起，偏向锁升级为轻量级锁，然后被阻塞在安全点的线程继续往下执行同步代码。
+5. 执行同步代码。
+
+---
+
+####偏向锁的解锁过程
+偏向锁的撤销在上述第四步骤中有提到。偏向锁只有遇到其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁，线程不会主动去释放偏向锁。偏向锁的撤销，需要等待全局安全点（在这个时间点上没有字节码正在执行），它会首先暂停拥有偏向锁的线程，判断锁对象是否处于被锁定状态，撤销偏向锁后恢复到未锁定（标志位为“01”）或轻量级锁（标志位为“00”）的状态。
+
+---
+
+###锁的优缺点对比
+![Alt text](./1545986289590.png)
+
+---
+
+#Java内存模型
+>Java内存模型是java虚拟机用来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让java程序在各种平台下都能达到一致的内存访问效果。
+
+---
+
+##主内存与工作内存
+>Java内存模型的主要目标是定义程序中各个变量的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。此处的变量与Java编程中的变量有所区别，它包括了实例字段、静态字段、和构成数组对象的元素，但不包括局部变量与方法参数，因为后者是线程私有的，不会被共享，自然就不会存在竞争问题。为了获得较好的执行效能，Java内存模型并没有限制执行引擎使用处理器的特定寄存器或缓存来和主内存进行交互，也没有限制即时编译器进行调整代码执行顺序这类优化措施。
+**Java内存模型规定了所有的变量都存储在主内存中。每条线程还有自己的工作内存，用于保存该线程使用到的变量的主内存副本拷贝，线程对变量的所有操作都必须在工作内存中进行，而不能直接操作主内存中的变量。不同的线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递均需要通过主内存来完成。**
+
+---
+
+##内存间交互操作
+关于主内存与工作内存之间的具体交互协议，即一个变量如何从主内存拷贝到工作内存、如何从工作内存同步到主内存之间的实现细节，Java内存模型定义了以下八种操作来完成： 
+- lock（锁定）：作用于主内存的变量，把一个变量标识为一条线程独占状态。
+- unlock（解锁）：作用于主内存变量，把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。 
+- read（读取）：作用于主内存变量，把一个变量值从主内存传输到线程的工作内存中，以便随后的load动作使用 
+- load（载入）：作用于工作内存的变量，它把read操作从主内存中得到的变量值放入工作内存的变量副本中。 
+- use（使用）：作用于工作内存的变量，把工作内存中的一个变量值传递给执行引擎，每当虚拟机遇到一个需要使用变量的值的字节码指令时将会执行这个操作。 
+- assign（赋值）：作用于工作内存的变量，它把一个从执行引擎接收到的值赋值给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。 
+- store（存储）：作用于工作内存的变量，把工作内存中的一个变量的值传送到主内存中，以便随后的write的操作。
+- write（写入）：作用于主内存的变量，它把store操作从工作内存中一个变量的值传送到主内存的变量中。
+>如果要把一个变量从主内存中复制到工作内存，就需要按顺寻地执行read和load操作， 如果把变量从工作内存中同步回主内存中，就要按顺序地执行store和write操作。Java内存 模型只要求上述操作必须按顺序执行，而没有保证必须是连续执行。也就是read和load之间， store和write之间是可以插入其他指令的，如对主内存中的变量a、b进行访问时，可能的顺 序是read a，read b，load b， load a。 
+
+---
+
+Java内存模型还规定了在执行上述八种基本操作时，必须满足如下规则： 
+- 不允许read和load、store和write操作之一单独出现 
+- 不允许一个线程丢弃它的最近assign的操作，即变量在工作内存中改变了之后必须同步到主内存中。 
+- 不允许一个线程无原因地（没有发生过任何assign操作）把数据从工作内存同步回主内存中。 
+- 一个新的变量只能在主内存中诞生，不允许在工作内存中直接使用一个未被初始化（load或assign）的变量。即就是对一个变量实施use和store操作之前，必须先执行过了assign和load操作。 
+- 一个变量在同一时刻只允许一条线程对其进行lock操作，但lock操作可以被同一条线程重复执行多次，多次执行lock后，只有执行相同次数的unlock操作，变量才会被解锁。
+- lock和unlock必须成对出现 如果对一个变量执行lock操作，将会清空工作内存中此变量的值，在执行引擎使用这个变量前需要重新执行load或assign操作初始化变量的值 
+- 如果一个变量事先没有被lock操作锁定，则不允许对它执行unlock操作；也不允许去unlock一个被其他线程锁定的变量。 
+-  对一个变量执行unlock操作之前，必须先把此变量同步到主内存中（执行store和write操作）。
+
+---
+
+##原子性、可见性和有序性
+- 原子性：即一个操作或者多个操作，要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。
+> Java内存模型要求lock、unlock、read、load、use、assign、store、write这8个操作都具有原子性，但对于64位的数据类型（long和double），允许虚拟机将没有被volatile修饰的64位数据的读写操作划分为两次32位的读写操作来进行，即允许虚拟机实现选择可以不保证64位数据类型的read、load、store、write这4个操作的原子性。
+- 可见性：可见性是指当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。 
+>Java内存模型是通过在变量修改后将新值同步回主内存，在变量读取前从主内存刷新变量值这种依赖主内存作为传递媒介的方式来实现可见性。 volatile特殊规则保障新值可以立即同步到主内存中。 Synchronized是在对一个变量执行unlock之前，必须把变量同步回主内存中（执行store、write操作）。被final修饰的字段在构造器中一旦初始化完成，并且构造器没有把this的引用传递出去，那在其他线程中就能看见final字段的值
+- 有序性：即程序执行的顺序按照代码的先后顺序执行。
+
+---
+
+##volatile
+关键字volatile可以说是Java提供的最轻量级的同步机制。当一个变量定义为volatile之后，他将具有以下两种特性：
+
+---
+
+###保证变量可见性
+volatile变量的第一个特性是保证此变量对所有线程的可见性，这里的“可见性”是指**当一条线程修改了这个变量的值，新值对于其他线程来说是可以立即得知的**。
+>当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主内存，当有其他线程需要读取时，它会去内存中读取新值。而普通的共享变量不能保证可见性，因为普通共享变量被修改之后，什么时候被写入主存是不确定的，当其他线程去读取时，此时内存中可能还是原来的旧值，因此无法保证可见性。
+
+另外，通过synchronized和Lock也能够保证可见性，synchronized和Lock能保证同一时刻只有一个线程获取锁然后执行同步代码，并且在释放锁之前会将对变量的修改刷新到主存当中。因此可以保证可见性。
+
+>volatile变量对所有线程是立即可见的，对volatile变量 所有的写操作都能立刻反应到其他线程当中，换句话说，volatile变量在各个线程中是一致的。但并不能得出“基于volatile变量的运算在并发下是安全的“这个结论。volatile变量在各个线程的工作内存中不存在一致性问题，但是Java里面的运算并非原子操作，导致volatile变量的运算在并发下一样是不安全的。
+>由于volatile变量只能保证可见性，在不符合以下两条规则的运算场景中，我们仍然要通过加锁来保证原子性。
+- 运算结果并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值。
+- 变量不需要与其他的状态变量共同参与不变约束。
+
+---
+
+###禁止指令重排序     
+volatile变量的第二个特性是禁止指令重排序优化，普通的变量仅仅会保证在该方法的执行过程中所有依赖赋值结果的地方都能获取正确的结果，而不能保证变量赋值操作的顺序与程序代码中的执行顺序一致。
+##先行发生（happens-before）原则
+这些先行发生关系无须任何同步就已经存在，如果不再此列就不能保障顺序性，虚拟机就可以对它们任意地进行重排序
+- 程序次序规则：在一个线程内，按照程序代码顺序，书写在前面的操作先行发生于书写在后面的操作。准确的说，应该是控制顺序而不是程序代码顺序，因为要考虑分支、循环等结构
+- 管程锁定规则：一个unlock操作先行发生于后面对同一个锁的lock操作。这里必须强调的是同一个锁，而后面的是指时间上的先后顺序
+- Volatile变量规则：对一个volatile变量的写操作先行发生于后面对这个变量的读操作，这里的后面同样是指时间上的先后顺序
+- 线程启动规则：Thread对象的start()方法先行发生于此线程的每一个动作
+- 线程终止规则：线程中的所有操作都先行发生于对此线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值等手段检测到线程已经终止执行
+- 线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断时间的发生，可以通过Thread.interrupted()方法检测到是否有中断发生
+- 对象终结规则：一个对象的初始化完成(构造函数执行结束)先行发生于它的finalize()方法的开始
+- 传递性：如果操作A先行发生于操作B，操作B先行发生于操作C，那就可以得出操作A先行发生于操作C的结论
