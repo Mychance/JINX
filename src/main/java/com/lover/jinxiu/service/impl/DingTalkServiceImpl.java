@@ -12,6 +12,7 @@ import java.net.URL;
 
 @Service
 public class DingTalkServiceImpl implements DingTalkService {
+    //master test push
     @Override
     public String getAddressByIP(String ip) throws IOException {
         String address = "";
