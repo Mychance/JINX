@@ -9,5 +9,5 @@ public class JinxiuApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JinxiuApplication.class, args);
 	}
-	
+
 }
